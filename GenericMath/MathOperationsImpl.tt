@@ -1,0 +1,46 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".g.cs" #>
+using System;
+using System.Runtime.CompilerServices;
+
+<# 
+var types = new [] { 
+    "Int16",
+    "Int32",
+    "Int64",
+    "UInt16",
+    "UInt32",
+    "UInt64",
+	"Byte",
+	"SByte",
+	"Single",
+	"Double",
+	"Decimal",
+	"Char",
+}.AsEnumerable();
+types = types.SelectMany(t => new [] { t, t+"?" });
+#>
+
+namespace GenericMath
+{
+    static partial class MathOperationsImpl
+    {
+<# foreach (var type in types) { #>
+#region <#=type#> methods
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static <#=type#> Add(<#=type#> x, <#=type#> y) => (<#=type#>)(x + y);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static <#=type#> Subtract(<#=type#> x, <#=type#> y) => (<#=type#>)(x - y);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static <#=type#> Multiply(<#=type#> x, <#=type#> y) => (<#=type#>)(x * y);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static <#=type#> Divide(<#=type#> x, <#=type#> y) => (<#=type#>)(x / y);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static <#=type#> AddChecked(<#=type#> x, <#=type#> y) => checked((<#=type#>)(x + y));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static <#=type#> SubtractChecked(<#=type#> x, <#=type#> y) => checked((<#=type#>)(x - y));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static <#=type#> MultiplyChecked(<#=type#> x, <#=type#> y) => checked((<#=type#>)(x * y));
+#endregion
+
+<# } #>
+    }
+}
